@@ -1,0 +1,36 @@
+'use strict';
+
+const mongoose = require('mongoose');
+const Product = mongoose.model('Product');
+
+exports.get = async() => {
+    const res = await Product.find({ active: true}, 'title price slug ');
+    return res;
+     /* find: encontrar todos os produtos */
+}
+exports.getBySlug = async(slug) => {
+
+    const res = await Product.findOne({slug: slug, active: true}, 'title description price slug tags '); 
+    return res;
+    /* findOne: especificar a busca */
+}
+exports.getById = async(id) => {
+    const res = await Product.findById(id);
+    return res;
+}
+exports.getByTag = async(tags) => {
+    const res = await Product.find({tags: tags, active: true},'title description price slug' );
+    return res;
+}
+exports.create = async(data) => {
+    var product = new Product(data);
+    const res = await product.save();
+} 
+exports.update = async(id, data) => { 
+    const res = await Product.findByIdAndUpdate(id,{ $set: {title: data.title, description: data.description, slug: data.slug,
+    price: data.price}}); 
+    /* put= método que visa só armazenar ou atualizar algo e não fazer mais açoões */
+} 
+exports.delete = async(id) => { 
+    const res = await Product.findOneAndDelete(id);
+}
